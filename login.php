@@ -1,13 +1,17 @@
+<?php session_start(); ?>
 <?php include 'db.php'; ?>
+
 <?php
 if (isset($_SESSION['user_id'])) {
     header("Location: dashboard.php");
     exit();
 }
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
     <style>
         * {
@@ -62,26 +66,36 @@ if (isset($_SESSION['user_id'])) {
             <button name="login">Login</button>
         </form>
         <a class="link" href="register.php">Don't have an account? Register</a>
+        
 
         <?php
-        session_start();
         if (isset($_POST['login'])) {
+            // Prepare and bind
             $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
             $stmt->bind_param("s", $_POST['username']);
             $stmt->execute();
             $result = $stmt->get_result();
             $user = $result->fetch_assoc();
 
+            // Check if user exists and verify password
             if ($user && password_verify($_POST['password'], $user['password'])) {
                 // Set session variables
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username']; // Add this line
+                $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
-                header("Location: dashboard.php");
+
+                if ($user['role'] === 'officer') {
+                    header("Location: cashier_dashboard.php");
+                } else if ($user['role'] === 'applicant') {
+                    header("Location: dashboard.php");
+                } else {
+                    echo "<p style='color:red;'>Unauthorized role.</p>";
+                }
                 exit();
             } else {
-                echo "<p style='color:red;'>Invalid credentials</p>";
+                echo "<p style='color:red;'>Invalid username or password</p>";
             }
+            $stmt->close();
         }
         ?>
     </div>
