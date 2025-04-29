@@ -59,10 +59,6 @@ if (isset($_SESSION['user_id'])) {
         <form method="POST">
             <input name="username" placeholder="Username" required>
             <input name="password" type="password" placeholder="Password" required>
-            <select name="role" required>
-                <option value="applicant">Loan Applicant</option>
-                <option value="officer">Loan Officer</option>
-            </select>
             <button name="register">Register</button>
         </form>
         <a class="link" href="login.php">Already have an account? Log in</a>

@@ -11,8 +11,8 @@ if (isset($_SESSION['user_id'])) {
     <title>Login</title>
     <style>
         * {
-    box-sizing: border-box;
-}
+            box-sizing: border-box;
+        }
         body {
             margin: 0;
             height: 100vh;
@@ -73,9 +73,12 @@ if (isset($_SESSION['user_id'])) {
             $user = $result->fetch_assoc();
 
             if ($user && password_verify($_POST['password'], $user['password'])) {
+                // Set session variables
                 $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username']; // Add this line
                 $_SESSION['role'] = $user['role'];
                 header("Location: dashboard.php");
+                exit();
             } else {
                 echo "<p style='color:red;'>Invalid credentials</p>";
             }
